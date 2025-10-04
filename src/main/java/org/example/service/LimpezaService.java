@@ -46,7 +46,9 @@ public class LimpezaService {
 
     }
 
-    public static void limparArquivosTemp() {
+    public static void limparArquivosTemp(String confimacao) {
+        if (!confimacao.equalsIgnoreCase("S")) return;
+
         File tmpDirectory = new File("/tmp");
 
         if (tmpDirectory.exists() && tmpDirectory.isDirectory()) {

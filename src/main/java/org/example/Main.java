@@ -12,6 +12,7 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
         int op;
+        String confirmacao = "";
 
         do {
             System.out.println("=======CLI OTIMIZADOR DE SISTEMA=======");
@@ -23,7 +24,8 @@ public class Main {
 
             switch (op) {
                 case 1:
-                    System.out.println("Tem certeza que deseja excluir os arquivos?(y/n)");
+                    System.out.println("Tem certeza que deseja excluir os arquivos temporários?(s/n): ");
+                    confirmacao = sc.next();
                     LimpezaService.limparArquivosTemp();
                     break;
 
