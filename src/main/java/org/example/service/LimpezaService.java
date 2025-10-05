@@ -12,16 +12,16 @@ public class LimpezaService {
             "pulse-",             // usado pelo sistema de áudio
             "gvfs",               // sistema de arquivos virtual do GNOME
             "ssh-",               // usado por conexões seguras
-            "tmp-",               // pode ser usado por apps em execução
+            "tmp-",               // genérico, pode ser usado por apps em execução
             "runtime-"            // usado pelo sistema em algumas distros
     );
 
     /* Deletar arquivos de forma recursiva nos diretórios
      */
-    public static void limparDiretorio(File file) {
-        if (!file.isDirectory()) return;
+    public static void limparDiretorio(File diretorio) {
+        if (!diretorio.isDirectory()) return;
 
-        File[] listFiles = file.listFiles();
+        File[] listFiles = diretorio.listFiles();
 
         if (listFiles == null) return;
 
@@ -31,17 +31,19 @@ public class LimpezaService {
             boolean ignorar = DIRECTORY_IGNORE.stream().anyMatch(nome::startsWith);
 
             if (ignorar) {
+                System.out.println("Arquivos ignorados(essenciais): " + arquivo.getAbsolutePath());
                 continue;
             }
 
-            if (file.isDirectory()) {
+            if (arquivo.isDirectory()) {
                 limparDiretorio(arquivo);
+                arquivo.delete();
             } else {
                 arquivo.delete();
             }
         }
-        if (!file.getAbsolutePath().equals("/tmp")) {
-            file.delete();
+        if (!diretorio.getAbsolutePath().equals("/tmp")) {
+            diretorio.delete();
         }
 
     }
