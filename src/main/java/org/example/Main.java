@@ -1,7 +1,7 @@
 package org.example;
 
 import org.example.service.LimpezaService;
-import org.example.service.SistemaService;
+import org.example.service.MonitoramentoSistemaService;
 
 import java.util.Scanner;
 
@@ -13,6 +13,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         int op;
         String confirmacao = "";
+        MonitoramentoSistemaService monitoramentoSistemaService = new MonitoramentoSistemaService();
 
         do {
             System.out.println("=======CLI OTIMIZADOR DE SISTEMA=======");
@@ -26,11 +27,11 @@ public class Main {
                 case 1:
                     System.out.println("Tem certeza que deseja excluir os arquivos temporários?(s/n): ");
                     confirmacao = sc.next();
-                    LimpezaService.limparArquivosTemp();
+                    LimpezaService.limparArquivosTemp(confirmacao);
                     break;
 
                 case 2:
-                    SistemaService.mostrarDesempenho();
+                    monitoramentoSistemaService.checkSystemUsage("MonitoringSystem");
                     break;
                 case 0:
                     System.out.println("Saindo");

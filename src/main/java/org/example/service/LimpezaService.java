@@ -12,7 +12,7 @@ public class LimpezaService {
             "pulse-",             // usado pelo sistema de áudio
             "gvfs",               // sistema de arquivos virtual do GNOME
             "ssh-",               // usado por conexões seguras
-            "tmp-",               // genérico, pode ser usado por apps em execução
+            "tmp-",               // pode ser usado por apps em execução
             "runtime-"            // usado pelo sistema em algumas distros
     );
 
