@@ -1,10 +1,13 @@
 package org.example.service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LimpezaService {
+    private static final Logger logger = Logger.getLogger(LimpezaService.class.getName());
 
     private static final List<String> DIRECTORY_IGNORE = Arrays.asList(
             "systemd-private-",   // usado por serviços do Linux
@@ -18,12 +21,14 @@ public class LimpezaService {
 
     /* Deletar arquivos de forma recursiva nos diretórios
      */
-    public static void limparDiretorio(File diretorio) {
-        if (!diretorio.isDirectory()) return;
+    public static List<String> limparDiretorio(File diretorio) {
+        List<String>  deletedFiles = new ArrayList<>();
+
+        if (!diretorio.isDirectory()) return deletedFiles;
 
         File[] listFiles = diretorio.listFiles();
 
-        if (listFiles == null) return;
+        if (listFiles == null) return deletedFiles;
 
         for (File arquivo : listFiles) {
             String nome = arquivo.getName();
@@ -31,21 +36,34 @@ public class LimpezaService {
             boolean ignorar = DIRECTORY_IGNORE.stream().anyMatch(nome::startsWith);
 
             if (ignorar) {
-                System.out.println("Arquivos ignorados(essenciais): " + arquivo.getAbsolutePath());
+                logger.info("Arquivo ignorado (essencial): {}" + arquivo.getAbsolutePath());
                 continue;
             }
 
             if (arquivo.isDirectory()) {
-                limparDiretorio(arquivo);
-                arquivo.delete();
+                deletedFiles.addAll(limparDiretorio(arquivo));
+                if (arquivo.delete()) {
+                    deletedFiles.add("[DIR] " + arquivo.getAbsolutePath());
+                } else {
+                    logger.warning("Falha ao deletar diretório: " + arquivo.getAbsolutePath());
+                }
             } else {
-                arquivo.delete();
+                if (arquivo.delete()) {
+                    deletedFiles.add(arquivo.getAbsolutePath());
+                } else {
+                    logger.warning("Falha ao deletar arquivo: " + arquivo.getAbsolutePath());
+                }
             }
         }
+
+        // Não deletar o próprio /tmp
         if (!diretorio.getAbsolutePath().equals("/tmp")) {
-            diretorio.delete();
+            if (!diretorio.delete()) {
+                logger.fine("Diretório não deletado (pode não estar vazio): " + diretorio.getAbsolutePath());
+            }
         }
 
+        return deletedFiles;
     }
 
     public static void limparArquivosTemp(String confimacao) {
@@ -54,8 +72,7 @@ public class LimpezaService {
         File tmpDirectory = new File("/tmp");
 
         if (tmpDirectory.exists() && tmpDirectory.isDirectory()) {
-            limparDiretorio(tmpDirectory);
-            System.out.println("limpeza de arquivos temporários concluída");
+            System.out.println("limpeza de arquivos temporários concluída. Arquivos deletados: " + limparDiretorio(tmpDirectory));
         }
     }
 }
