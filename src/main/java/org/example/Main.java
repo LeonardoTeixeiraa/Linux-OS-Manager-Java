@@ -8,7 +8,7 @@ import java.util.Scanner;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         Scanner sc = new Scanner(System.in);
         int op;
@@ -34,10 +34,12 @@ public class Main {
                     monitoramentoSistemaService.checkSystemUsage("MonitoringSystem");
                     break;
                 case 0:
-                    System.out.println("Saindo");
+                    System.out.print("Saindo");
                     for (int i = 0; i < 3; i++) {
-                        System.out.println(".");
+                        System.out.print(".");
+                        Thread.sleep(500);
                     }
+                    break;
                 default:
                     System.out.println("Opção inválida!");
             }
